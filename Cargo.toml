@@ -1,0 +1,16 @@
+[workspace]
+members = [
+    "tasks/g_problem_with_queries",
+    "tasks/f_nim",
+    "tasks/e_matrix_transformation",
+    "tasks/d_problem_about_gcd",
+    "tasks/c_sums_on_segments",
+    "tasks/b_digits",
+    "tasks/a_coin_transformation",
+    "tasks/c_save_the_nature",
+    "tasks/d_move_back_at_acost",
+    "tasks/c_swap_columns_and_find_apath",
+    "main",
+    "algo_lib",
+]
+resolver = "2"
