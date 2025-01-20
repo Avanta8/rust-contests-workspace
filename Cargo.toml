@@ -1,11 +1,16 @@
 [workspace]
 members = [
-    "tasks/e_resourceful_caterpillar_sequence",
-    "tasks/d_refined_product_optimality",
-    "tasks/c_bewitching_stargazer",
-    "tasks/b_outstanding_impressionist",
-    "tasks/a_tender_carpenter",
-    "main",
+    "tasks/d_gifts_order",
+    "tasks/c_trip_to_the_olympiad",
+    "tasks/b_gorilla_and_the_exam",
+    "tasks/a_mextable",
+    "tasks/d2_zero_one_hard_version",
+    "tasks/d1_zero_one_easy_version",
+    "tasks/c_ordered_permutations",
+    "tasks/d_non_prime_tree",
+    "tasks/c_competitive_fishing",
+    "tasks/d_kevin_and_competition_memories",
+    # "main",
     "algo_lib",
 ]
 resolver = "2"

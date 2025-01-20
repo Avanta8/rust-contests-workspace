@@ -1,6 +1,6 @@
-// https://codeforces.com/contest/2053/problem/E
+// https://codeforces.com/contest/2057/problem/D
 pub mod solution {
-//{"name":"E. Resourceful Caterpillar Sequence","group":"Codeforces - Good Bye 2024: 2025 is NEAR","url":"https://codeforces.com/contest/2053/problem/E","interactive":false,"timeLimit":2000,"tests":[{"input":"5\n2\n1 2\n5\n1 2\n1 3\n2 4\n2 5\n12\n1 6\n11 2\n4 8\n12 3\n2 7\n6 12\n8 1\n2 3\n5 12\n9 2\n10 3\n10\n1 2\n2 3\n3 4\n4 5\n5 6\n4 7\n6 8\n4 9\n4 10\n25\n1 16\n11 22\n6 14\n3 1\n20 14\n23 17\n25 19\n10 11\n3 18\n10 6\n2 21\n4 5\n11 12\n4 9\n9 13\n8 6\n6 1\n3 7\n8 19\n10 24\n15 13\n1 2\n3 4\n17 8\n","output":"0\n6\n40\n27\n171\n"}],"testType":"single","input":{"type":"stdin","fileName":null,"pattern":null},"output":{"type":"stdout","fileName":null,"pattern":null},"languages":{"java":{"taskClass":"EResourcefulCaterpillarSequence"}}}
+//{"name":"D. Gifts Order","group":"Codeforces - Hello 2025","url":"https://codeforces.com/contest/2057/problem/D","interactive":false,"timeLimit":2000,"tests":[{"input":"3\n2 2\n1 10\n1 10\n2 2\n5 3\n1 2 3 4 5\n3 7\n1 4\n5 2\n8 5\n7 4 2 4 8 2 1 4\n5 4\n1 10\n3 2\n8 11\n7 7\n","output":"8\n0\n7\n0\n4\n4\n4\n5\n3\n6\n6\n9\n7\n"}],"testType":"single","input":{"type":"stdin","fileName":null,"pattern":null},"output":{"type":"stdout","fileName":null,"pattern":null},"languages":{"java":{"taskClass":"DGiftsOrder"}}}
 
 #![allow(
     clippy::collapsible_else_if,
@@ -13,7 +13,6 @@ pub mod solution {
 
 #[allow(unused_imports)]
 use crate::dbg;
-use crate::algo_lib::collections::fxhash::FxHashSet;
 use crate::algo_lib::io::input::Input;
 use crate::algo_lib::io::output::Output;
 use crate::algo_lib::misc::test_type::TaskType;
@@ -22,61 +21,16 @@ use crate::algo_lib::misc::test_type::TestType;
 
 type PreCalc = ();
 
-pub fn gen_graph(edges: &[(usize, usize)], len: usize) -> Vec<Vec<usize>> {
-    let mut graph = vec![vec![]; len];
-    for &(a, b) in edges {
-        graph[a].push(b);
-        graph[b].push(a);
-    }
-    graph
-}
-
-pub fn find_leaves(graph: &[Vec<usize>]) -> Vec<usize> {
-    graph
-        .iter()
-        .enumerate()
-        .filter_map(|(i, neighbours)| (neighbours.len() == 1).then(|| i))
-        .collect()
-}
-
 fn solve(input: &mut Input, out: &mut Output, _test_case: usize, _data: &mut PreCalc) {
     let size = input.read_size();
-    let mut edges = input.read_vec::<(usize, usize)>(size - 1);
+    let query_size = input.read_size();
+    let vec = input.read_long_vec(size);
+    let queries = input.read_vec::<(usize, i64)>(query_size);
 
-    for e in edges.iter_mut() {
-        e.0 -= 1;
-        e.1 -= 1;
+    for (mut idx, val) in queries {
+        idx -= 1;
+        todo!()
     }
-
-    let graph = gen_graph(&edges, size);
-    let leaves = find_leaves(&graph);
-
-    let mut nl = FxHashSet::default();
-    for &l in leaves.iter() {
-        for &n in graph[l].iter() {
-            nl.insert(n);
-        }
-    }
-    for &l in leaves.iter() {
-        nl.remove(&l);
-    }
-
-    let nl_count = nl.len() as i64;
-
-    let mut vert_count = size as i64;
-    let mut edges_count = size as i64 - 1;
-    let mut leaves_count = leaves.len() as i64;
-    let mut non_count = vert_count - leaves_count;
-
-    let mut total = 0;
-
-    total += leaves_count * (vert_count - leaves_count);
-    total += nl_count * (vert_count - nl_count - leaves_count);
-
-    dbg!(leaves);
-    dbg!(nl);
-    dbg!(leaves_count, vert_count, nl_count);
-    out.print_line(total);
 }
 
 pub static TEST_TYPE: TestType = TestType::MultiNumber;
@@ -115,109 +69,6 @@ pub mod algo_lib {
 #![allow(clippy::type_complexity)]
 #![allow(clippy::missing_safety_doc)]
 
-pub mod collections {
-pub mod fxhash {
-// Copyright 2015 The Rust Project Developers. See the COPYRIGHT at
-// http://rust-lang.org/COPYRIGHT.
-//
-// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
-// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
-// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
-// option. This file may not be copied, modified, or distributed
-// except according to those terms.
-
-use std::cell::Cell;
-use std::convert::TryInto;
-use std::time::SystemTime;
-use std::collections::HashMap;
-use std::collections::HashSet;
-use std::hash::BuildHasherDefault;
-use std::hash::Hasher;
-use std::mem::size_of;
-use std::ops::BitXor;
-
-pub type FxHashMap<K, V> = HashMap<K, V, BuildHasherDefault<FxHasher>>;
-
-pub type FxHashSet<V> = HashSet<V, BuildHasherDefault<FxHasher>>;
-
-#[derive(Default)]
-pub struct FxHasher {
-    hash: usize,
-}
-
-thread_local! {
-    static K: Cell<usize> = Cell::new(
-        ((SystemTime::UNIX_EPOCH.elapsed().unwrap().as_nanos().wrapping_mul(2) + 1) & 0xFFFFFFFFFFFFFFFF) as usize
-    );
-}
-
-impl FxHasher {
-    #[inline]
-    fn add_to_hash(&mut self, i: usize) {
-        self.hash = self
-            .hash
-            .rotate_left(5)
-            .bitxor(i)
-            .wrapping_mul(K.with(|k| k.get()));
-    }
-}
-
-impl Hasher for FxHasher {
-    #[inline]
-    fn write(&mut self, mut bytes: &[u8]) {
-        let read_usize = |bytes: &[u8]| u64::from_ne_bytes(bytes[..8].try_into().unwrap());
-
-        let mut hash = FxHasher { hash: self.hash };
-        while bytes.len() >= size_of::<usize>() {
-            hash.add_to_hash(read_usize(bytes) as usize);
-            bytes = &bytes[size_of::<usize>()..];
-        }
-        if (size_of::<usize>() > 4) && (bytes.len() >= 4) {
-            hash.add_to_hash(u32::from_ne_bytes(bytes[..4].try_into().unwrap()) as usize);
-            bytes = &bytes[4..];
-        }
-        if (size_of::<usize>() > 2) && bytes.len() >= 2 {
-            hash.add_to_hash(u16::from_ne_bytes(bytes[..2].try_into().unwrap()) as usize);
-            bytes = &bytes[2..];
-        }
-        if (size_of::<usize>() > 1) && !bytes.is_empty() {
-            hash.add_to_hash(bytes[0] as usize);
-        }
-        self.hash = hash.hash;
-    }
-
-    #[inline]
-    fn write_u8(&mut self, i: u8) {
-        self.add_to_hash(i as usize);
-    }
-
-    #[inline]
-    fn write_u16(&mut self, i: u16) {
-        self.add_to_hash(i as usize);
-    }
-
-    #[inline]
-    fn write_u32(&mut self, i: u32) {
-        self.add_to_hash(i as usize);
-    }
-
-    #[inline]
-    fn write_u64(&mut self, i: u64) {
-        self.add_to_hash(i as usize);
-    }
-
-    #[inline]
-    fn write_usize(&mut self, i: usize) {
-        self.add_to_hash(i);
-    }
-
-    #[inline]
-    fn finish(&self) -> u64 {
-        self.hash as u64
-    }
-}
-}
-}
 pub mod io {
 pub mod input {
 use std::fmt::Debug;
